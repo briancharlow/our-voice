@@ -1,0 +1,5 @@
+CREATE PROCEDURE GetAllPolls
+AS
+BEGIN
+    SELECT * FROM Polls ;
+END;
