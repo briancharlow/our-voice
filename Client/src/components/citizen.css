@@ -1,0 +1,273 @@
+/* styles.css */
+:root {
+    --color-green-primary: #166534;
+    --color-green-light: #F0FDF4;
+    --color-red-primary: #B91C1C;
+    --color-red-light: #FEE2E2;
+    --color-gray: #4B5563;
+    --color-white: #ffffff;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Base styles */
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  
+  .container {
+    min-height: 100vh;
+    background-color: var(--color-green-light);
+  }
+  
+  /* Navigation */
+  .nav {
+    background-color: var(--color-white);
+    box-shadow: var(--shadow-sm);
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 4px solid var(--color-red-primary);
+  }
+  
+  .nav-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .menu-button {
+    padding: 0.5rem;
+    background: none;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    color: var(--color-green-primary);
+  }
+  
+  .menu-button:hover {
+    background-color: var(--color-green-light);
+  }
+  
+  .brand {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-left: 1rem;
+    color: var(--color-red-primary);
+  }
+  
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .profile-circle {
+    width: 2rem;
+    height: 2rem;
+    background-color: black;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-white);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  /* Layout */
+  .main-layout {
+    display: flex;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    background-color: var(--color-white);
+    height: calc(100vh - 4rem);
+    box-shadow: var(--shadow-sm);
+    transition: width 0.3s;
+  }
+  
+  .sidebar.open {
+    width: 16rem;
+  }
+  
+  .sidebar.closed {
+    width: 5rem;
+  }
+  
+  .sidebar-nav {
+    padding: 1rem;
+  }
+  
+  .sidebar-nav > * + * {
+    margin-top: 0.5rem;
+  }
+  
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    color: var(--color-green-primary);
+  }
+  
+  .sidebar-item:hover {
+    background-color: var(--color-green-light);
+  }
+  
+  .sidebar-item span {
+    margin-left: 0.75rem;
+  }
+  
+  .sidebar-divider {
+    margin: 1rem 0;
+    border-top: 1px solid var(--color-green-light);
+  }
+  
+  /* Main Content */
+  .main-content {
+    flex: 1;
+    padding: 1.5rem;
+  }
+  
+  .grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  /* Cards */
+  .card {
+    background-color: var(--color-white);
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-green-light);
+    overflow: hidden;
+  }
+  
+  .card-header {
+    padding: 1.5rem 1.5rem 0;
+  }
+  
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-green-primary);
+  }
+  
+  .card-content {
+    padding: 1.5rem;
+  }
+  
+  /* Welcome Card */
+  .welcome-card {
+    grid-column: 1 / -1;
+  }
+  
+  .welcome-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--color-green-primary);
+  }
+  
+  .welcome-text {
+    color: var(--color-gray);
+  }
+  
+  /* Polls Card */
+  .polls-card {
+    grid-column: span 2;
+  }
+  
+  .poll-item {
+    background-color: var(--color-green-light);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .poll-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .poll-title {
+    font-weight: 500;
+    color: var(--color-green-primary);
+  }
+  
+  .poll-participants {
+    font-size: 0.875rem;
+    color: var(--color-gray);
+  }
+  
+  .poll-days {
+    font-size: 0.875rem;
+    color: var(--color-red-primary);
+  }
+  
+  .progress-bar {
+    margin-top: 0.75rem;
+    width: 100%;
+    height: 0.5rem;
+    background-color: var(--color-green-light);
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+  
+  .progress-value {
+    height: 100%;
+    background-color: var(--color-red-primary);
+    border-radius: 9999px;
+  }
+  
+  /* Incidents Card */
+  .incident-item {
+    background-color: var(--color-green-light);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .incident-title {
+    font-weight: 500;
+    color: var(--color-green-primary);
+  }
+  
+  .incident-location {
+    font-size: 0.875rem;
+    color: var(--color-gray);
+  }
+  
+  .status-badge {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 9999px;
+  }
+  
+  .status-badge.in-progress {
+    background-color: var(--color-green-light);
+    color: var(--color-green-primary);
+  }
+  
+  .status-badge.pending {
+    background-color: var(--color-red-light);
+    color: var(--color-red-primary);
+  }
