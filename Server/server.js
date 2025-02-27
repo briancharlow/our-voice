@@ -4,8 +4,8 @@ import cors from 'cors';
 import session from 'express-session';
 import userRouter from './routes/userRoutes.js';
 import documentRouter from './routes/documentRoutes.js';
-// import pollRouter from './routes/pollRouter.js';
-// import issueRouter from './routes/issueRouter.js';
+import pollRouter from './routes/pollRoutes.js';
+import issueRouter from './routes/issueRoutes.js';
 
 const app = express();
 
@@ -34,8 +34,8 @@ app.use(session({
 // Routes
 app.use('/users', userRouter);
 app.use('/documents', documentRouter);
-// app.use('/polls', pollRouter);
-// app.use('/issues', issueRouter);
+app.use('/polls', pollRouter);
+app.use('/issues', issueRouter);
 
 // Start Server
 const PORT = process.env.PORT || 5000;

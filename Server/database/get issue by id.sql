@@ -1,0 +1,10 @@
+CREATE PROCEDURE GetIssueById
+    @IssueId UNIQUEIDENTIFIER
+AS
+BEGIN
+    SELECT * FROM Issues WHERE Id = @IssueId;
+END;
+
+
+
+
