@@ -9,7 +9,7 @@ export const createPoll = async (req, res) => {
     const { error } = validatePoll(req.body);
     if (error) return res.status(400).json({ error: error.details[0].message });
 
-    const { title, deadline, location } = req.body;
+    const { title, description, deadline, location } = req.body;
 
     try {
         // Convert "dd-mm-yy" to JavaScript Date
@@ -29,6 +29,7 @@ export const createPoll = async (req, res) => {
             Title: title,
             Deadline: sqlFormattedDate,
             Location: location,
+            Description: description
         });
 
         res.status(201).json({ message: 'Poll created successfully' });
