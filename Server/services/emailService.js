@@ -23,17 +23,23 @@ const transporter = nodemailer.createTransport({
 	},
 });
 
-export async function sendWelcomeEmail(recipient, appUserName) {
+export async function sendWelcomeEmail(recipient) {
 	try {
 		await transporter.sendMail({
-			from: `SendIt Team <${process.env.EMAIL_USER}>`,
+			from: `Our Voice Team <${process.env.EMAIL_USER}>`,
 			to: `${recipient}`,
-			subject: `Welcoome on Board`,
+			subject: `Welcome to Our Voice!`,
 			html: `
-                <h1>Welcome to SendIt, ${appUserName}!</h1>
-                <p>We’re excited to have you on board. You can now send and track your parcels with ease.</p>
-                <p>Get started now by logging in and creating your first parcel order.</p>
-                <p>Best regards, <br/>SendIt Team</p>
+                <h1>Welcome to CitizenConnect360</h1>
+                <p>We’re excited to have you on board! CitizenConnect360 empowers you to:</p>
+                <ul>
+                    <li>Access and learn about essential government documents.</li>
+                    <li>Report incidents in your community and track their resolutions.</li>
+                    <li>Participate in public polls and voice your opinions.</li>
+                    <li>Receive AI-driven insights on civil matters</li>
+                </ul>
+                <p>Get started now by logging in and exploring the platform.</p>
+                <p>Best regards, <br/>OurVoice Team</p>
             `,
 		});
 	} catch (error) {

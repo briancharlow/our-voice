@@ -1,25 +1,42 @@
 import { DbHelper } from '../Database Helper/dbHelper.js';
-const db = new DbHelper(); // Instantiate DB Helper
+import { validateIssue } from '../validators/validators.js';
+import { uploadFile } from '../middleware/uploadMiddleware.js';
 
-// Create Issue
+const db = new DbHelper();
+
+// Middleware to handle image upload
+const uploadImage = uploadFile('images').single('image');
+
 export const createIssue = async (req, res) => {
-    const { title, content, category, status, image, location } = req.body;
+    // Handle image upload
+    uploadImage(req, res, async function (err) {
+        if (err) {
+            return res.status(400).json({ error: err.message });
+        }
 
-    try {
-        await db.executeProcedure('CreateIssue', {
-            Title: title,
-            Content: content,
-            Category: category,
-            Status: status,
-            Image: image,
-            Location: location,
-        });
+        // Validate request body
+        const { error } = validateIssue(req.body);
+        if (error) return res.status(400).json({ error: error.details[0].message });
 
-        res.status(201).json({ message: 'Issue reported successfully' });
+        try {
+            const { title, content, category, location } = req.body;
+            const image = req.file ? req.file.location : null; // S3 Image URL
 
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+            await db.executeProcedure('CreateIssue', {
+                Title: title,
+                Content: content,
+                Category: category,
+                Status: 'Open', // Default status for new issues
+                Image: image,
+                Location: location,
+            });
+
+            res.status(201).json({ message: 'Issue reported successfully', Image: image });
+
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    });
 };
 
 // Update Issue Status
@@ -32,7 +49,9 @@ export const updateIssueStatus = async (req, res) => {
             NewStatus: newStatus,
         });
 
-        res.status(200).json({ message: 'Issue status updated successfully' });
+        res.status(200).json({ 
+            NewStatus: newStatus,
+            message: 'Issue status updated successfully' });
 
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -42,8 +61,9 @@ export const updateIssueStatus = async (req, res) => {
 // Get All Issues
 export const getAllIssues = async (req, res) => {
     try {
-        let results = await db.executeProcedure('GetAllIssues');
-        res.status(200).json(results);
+        let results = await db.executeProcedure('GetAllIssues', {});
+        let issues = results.recordsets[0];
+        res.status(200).json(issues);
 
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -57,11 +77,13 @@ export const getIssuesByLocation = async (req, res) => {
     try {
         let results = await db.executeProcedure('GetIssuesByLocation', { Location: location });
 
-        if (results.length === 0) {
+        let issues = results.recordsets[0];
+
+        if (issues.length === 0) {
             return res.status(404).json({ message: 'No issues found for this location' });
         }
 
-        res.status(200).json(results);
+        res.status(200).json(issues);
 
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -74,12 +96,16 @@ export const getIssueById = async (req, res) => {
 
     try {
         let results = await db.executeProcedure('GetIssueById', { IssueId: issueId });
+        let issues = results.recordsets[0];
+        let issue = issues[0];
 
-        if (results.length === 0) {
+        console.log('Issue:', issue);
+
+        if (issue.length === 0) {
             return res.status(404).json({ message: 'Issue not found' });
         }
 
-        res.status(200).json(results[0]);
+        res.status(200).json(issue);
 
     } catch (error) {
         res.status(500).json({ error: error.message });

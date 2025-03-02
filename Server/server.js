@@ -22,7 +22,7 @@ app.use(cors({
 // Session Middleware
 app.use(session({
     secret: process.env.SESSION_SECRET || 'your_secret_key',
-    resave: false,
+    resave: true,
     saveUninitialized: false,
     cookie: {
         secure: false, // Set to true if using HTTPS
