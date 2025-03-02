@@ -16,7 +16,6 @@ export const validateUser = (data) => {
         email: Joi.string().email().required(),
         password: Joi.string().min(6).required(),
         location: Joi.string().valid(...validLocations).required(),
-        role: Joi.string().valid('Citizen', 'Government Official', 'Admin').required()
     });
 
     return schema.validate(data);

@@ -5,7 +5,7 @@ import { isAuthenticated, isCitizen, isGovernmentOfficial } from '../middleware/
 const issueRouter = express.Router();
 
 // Routes
-issueRouter.post('/create', isAuthenticated,isCitizen, createIssue);
+issueRouter.post('/create', createIssue);
 issueRouter.put('/status', isAuthenticated, isGovernmentOfficial, updateIssueStatus);
 issueRouter.get('/all', getAllIssues);
 issueRouter.get('/location/:location', getIssuesByLocation);

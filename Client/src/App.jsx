@@ -1,17 +1,23 @@
-import { useState } from 'react'
-import CitizenConnect from './components/citizen'
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Signup from "./pages/signup";
+import Login from "./pages/Login"; 
+import NotFound from "./pages/notFound";
+import ForgotPassword from "./pages/forgotPassword";
+import ResetPassword from "./pages/resetPassword";
+import CitizenDashboard from "./pages/citizenDashboard";
 
-
-function App() {
-  
-
+export default function App() {
   return (
-    <div className="App">
-    
-      <CitizenConnect />
-    </div>
-    
-  )
+    <Router>
+      <Routes>
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/citizen-dashboard/*" element={<CitizenDashboard />} />
+        <Route path="/" element={<Navigate to="/signup" />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
+  );
 }
-
-export default App
