@@ -1,5 +1,8 @@
-CREATE PROCEDURE GetAllUsers
+CREATE OR ALTER PROCEDURE GetAllUsers
 AS
 BEGIN
-    SELECT Id, Email, Location, Role, created_at FROM Users;
+    SELECT * FROM Users;
 END;
+
+
+exec GetAllUsers

@@ -26,7 +26,8 @@ export const validatePoll = (data) => {
     const schema = Joi.object({
         title: Joi.string().max(255).required(),
         deadline: Joi.string().pattern(/^\d{2}-\d{2}-\d{2}$/).required(), // Must be in dd-mm-yy format
-        location: Joi.string().valid(...validLocations).required()
+        location: Joi.string().valid(...validLocations).required(),
+        description: Joi.string().required()
     });
 
     return schema.validate(data);

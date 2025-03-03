@@ -7,3 +7,9 @@ BEGIN
     SET Password = @NewPassword, ResetToken = NULL, ResetTokenExpiry = NULL
     WHERE Email = @Email;
 END;
+
+
+
+select * from Users
+
+

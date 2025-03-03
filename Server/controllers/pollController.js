@@ -2,12 +2,15 @@ import { DbHelper } from '../Database Helper/dbHelper.js';
 import { validatePoll } from '../validators/validators.js';
 const db = new DbHelper(); // Instantiate DB Helper
 
-
-// Create Poll
 export const createPoll = async (req, res) => {
+    console.log("Received Poll Data:", req.body); // Log incoming request data
+
     // Validate request body
     const { error } = validatePoll(req.body);
-    if (error) return res.status(400).json({ error: error.details[0].message });
+    if (error) {
+        console.log("Validation Error:", error.details[0].message);
+        return res.status(400).json({ error: error.details[0].message });
+    }
 
     const { title, description, deadline, location } = req.body;
 
@@ -17,13 +20,18 @@ export const createPoll = async (req, res) => {
         const fullYear = `20${year}`; // Convert "24" to "2024"
         const formattedDate = new Date(`${fullYear}-${month}-${day}T00:00:00Z`);
 
+        console.log("Formatted Date:", formattedDate);
+
         // Ensure valid date conversion
         if (isNaN(formattedDate.getTime())) {
+            console.log("Invalid Date:", deadline);
             return res.status(400).json({ error: 'Invalid date format. Use dd-mm-yy' });
         }
 
         // Convert to SQL DATETIME format (YYYY-MM-DD HH:MM:SS)
         const sqlFormattedDate = formattedDate.toISOString().slice(0, 19).replace('T', ' ');
+
+        console.log("SQL Formatted Date:", sqlFormattedDate);
 
         await db.executeProcedure('CreatePoll', {
             Title: title,
@@ -35,6 +43,7 @@ export const createPoll = async (req, res) => {
         res.status(201).json({ message: 'Poll created successfully' });
 
     } catch (error) {
+        console.error("Poll Creation Error:", error);
         res.status(500).json({ error: error.message });
     }
 };
