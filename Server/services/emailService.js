@@ -24,8 +24,8 @@ export async function sendWelcomeEmail(recipient) {
             to: recipient,
             subject: `Welcome to Our Voice!`,
             html: `
-                <h1>Welcome to CitizenConnect360</h1>
-                <p>We’re excited to have you on board! CitizenConnect360 empowers you to:</p>
+                <h1>Welcome to Our Voice</h1>
+                <p>We’re excited to have you on board! Our Voice empowers you to:</p>
                 <ul>
                     <li>Access and learn about essential government documents.</li>
                     <li>Report incidents in your community and track their resolutions.</li>

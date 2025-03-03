@@ -28,8 +28,10 @@ export default function Login() {
       setTimeout(() => {
         if (user?.Role === "Citizen") {
           navigate("/citizen-dashboard");
-        } else {
-          navigate("/dashboard"); // Default dashboard for other roles
+        } else if(user?.Role === "Government Official") {
+          navigate("/official-dashboard");
+        }else {
+          navigate("/admin-dashboard"); // Default dashboard for other roles
         }
       }, 2000);
       

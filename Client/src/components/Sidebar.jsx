@@ -4,17 +4,47 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const basePath = "/citizen-dashboard";
+  
+  // Determine which dashboard is active based on the current path
+  const path = location.pathname;
+  
+  // Check if we're in the official dashboard
+  const isOfficialDashboard = path.includes('/official-dashboard');
+  
+  // Set the base path based on which dashboard we're in
+  const basePath = isOfficialDashboard ? "/official-dashboard" : "/citizen-dashboard";
   
   // Check if the current path matches the menu item
-  const isActive = (path) => {
-    if (path === basePath && location.pathname === basePath) {
+  const isActive = (itemPath) => {
+    if (itemPath === basePath && location.pathname === basePath) {
       return true;
     }
-    return location.pathname.startsWith(path) && path !== basePath;
+    return location.pathname.startsWith(itemPath) && itemPath !== basePath;
   };
 
-  const menuItems = [
+  // Define menu items based on which dashboard is active
+  const officialMenuItems = [
+    {
+      path: basePath,
+      name: 'Dashboard',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+        </svg>
+      ),
+    },
+    {
+      path: `${basePath}/polls`,
+      name: 'Polls',
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      ),
+    },
+  ];
+
+  const citizenMenuItems = [
     {
       path: basePath,
       name: 'Dashboard',
@@ -52,6 +82,9 @@ const Sidebar = () => {
       ),
     },
   ];
+
+  // Choose which menu items to display based on which dashboard is active
+  const menuItems = isOfficialDashboard ? officialMenuItems : citizenMenuItems;
 
   return (
     <div className="bg-white w-64 border-r border-gray-200 min-h-screen hidden md:block">

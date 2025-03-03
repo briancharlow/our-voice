@@ -87,8 +87,6 @@ export const softDeletePoll = async (req, res) => {
 // Vote in a Poll
 export const voteInPoll = async (req, res) => {
     const { pollId, vote } = req.body;
-
-    console.log('session:', req.session.user);
     const userId = req.session.user?.Id;
 
     if (!userId) {
@@ -100,6 +98,17 @@ export const voteInPoll = async (req, res) => {
     }
 
     try {
+        // Check if the user has already voted
+        let existingVote = await db.executeProcedure('CheckUserVote', {
+            PollId: pollId,
+            UserId: userId
+        });
+
+        if (existingVote.recordset.length > 0) {
+            return res.status(409).json({ message: 'You have already voted in this poll' });
+        }
+
+        // Proceed with voting
         await db.executeProcedure('VoteInPoll', {
             PollId: pollId,
             UserId: userId,
@@ -109,6 +118,8 @@ export const voteInPoll = async (req, res) => {
         res.status(200).json({ message: 'Vote submitted successfully' });
 
     } catch (error) {
+        console.error('Error submitting vote:', error);
         res.status(500).json({ error: error.message });
     }
 };
+

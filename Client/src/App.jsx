@@ -5,6 +5,8 @@ import NotFound from "./pages/notFound";
 import ForgotPassword from "./pages/forgotPassword";
 import ResetPassword from "./pages/resetPassword";
 import CitizenDashboard from "./pages/citizenDashboard";
+import OfficialDashboard from "./pages/officialDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 
 export default function App() {
   return (
@@ -15,6 +17,8 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/citizen-dashboard/*" element={<CitizenDashboard />} />
+        <Route path="/official-dashboard/*" element={<OfficialDashboard />} />
+        <Route path="/admin-dashboard/*" element={<AdminDashboard />} />
         <Route path="/" element={<Navigate to="/signup" />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

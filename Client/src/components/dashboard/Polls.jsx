@@ -14,8 +14,6 @@ const Polls = () => {
         const response = await fetch('http://localhost:4000/users/session', { credentials: 'include' });
         const data = await response.json();
 
-        console.log('User session:', data);
-        console.log('Response:', response);
         if (response.ok) {
           setUser(data.user);
         }
@@ -37,9 +35,10 @@ const Polls = () => {
           location: poll.Location,
           endDate: new Date(poll.Deadline).toLocaleDateString(),
           participants: poll.Participants,
+          hasVoted: poll.hasVoted,
           options: [
-            { text: 'Support', value: 'yes', percentage: poll.Yes + poll.No > 0 ? (poll.Yes / (poll.Yes + poll.No)) * 100 : 0, count: poll.Yes },
-            { text: 'Reject', value: 'no', percentage: poll.Yes + poll.No > 0 ? (poll.No / (poll.Yes + poll.No)) * 100 : 0, count: poll.No }
+            { text: 'Support', value: 'Yes', percentage: poll.Yes + poll.No > 0 ? (poll.Yes / (poll.Yes + poll.No)) * 100 : 0, count: poll.Yes },
+            { text: 'Reject', value: 'No', percentage: poll.Yes + poll.No > 0 ? (poll.No / (poll.Yes + poll.No)) * 100 : 0, count: poll.No }
           ],
         }));
 
@@ -70,24 +69,34 @@ const Polls = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ pollId, userId: user.Id, Vote: voteValue })
+        body: JSON.stringify({ pollId, userId: user.Id, vote: voteValue })
       });
+
+      if (response.status === 409) {
+        setMessage('You have already voted in this poll');
+        setMessageType('error');
+        return;
+      }
 
       if (!response.ok) {
         throw new Error('Failed to record vote');
       }
 
-      setPolls(prevPolls => prevPolls.map(poll => {
-        if (poll.id === pollId) {
-          return {
-            ...poll,
-            options: poll.options.map(option =>
-              option.value === voteValue ? { ...option, count: option.count + 1 } : option
-            )
-          };
-        }
-        return poll;
-      }));
+      setPolls(prevPolls =>
+        prevPolls.map(poll => {
+          if (poll.id === pollId) {
+            return {
+              ...poll,
+              hasVoted: true,
+              participants: poll.participants + 1,
+              options: poll.options.map(option =>
+                option.value === voteValue ? { ...option, count: option.count + 1, percentage: ((option.count + 1) / (poll.Participants + 1)) * 100 } : option
+              )
+            };
+          }
+          return poll;
+        })
+      );
 
       setMessage('Your vote has been recorded!');
       setMessageType('success');
@@ -136,7 +145,7 @@ const Polls = () => {
                 </div>
                 <div className="mt-4 space-y-2">
                   {poll.options.map(option => (
-                    <div key={option.text} className="flex items-center cursor-pointer" onClick={() => handleVote(poll.id, option.value)}>
+                    <div key={option.text} className={`flex items-center cursor-pointer ${poll.hasVoted ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={() => !poll.hasVoted && handleVote(poll.id, option.value)}>
                       <span className="w-1/4 font-medium">{option.text}</span>
                       <div className="w-3/4 h-6 bg-gray-200 rounded-md relative">
                         <div className={`h-full rounded-md ${option.text === 'Support' ? 'bg-blue-500' : 'bg-red-500'}`} style={{ width: `${option.percentage}%` }}></div>
