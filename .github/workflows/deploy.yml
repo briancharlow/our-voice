@@ -10,7 +10,14 @@ jobs:
       - name: Get code
         uses: actions/checkout@v4
       - name: Load and cache dependencies
-        uses: ./.github/actions/cached_deps
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm ci
       - name: Lint code
         run: npm run lint
   test:
@@ -18,10 +25,15 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v4
-
       - name: Load and cache dependencies
-        uses: ./.github/actions/cached_deps
-
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install dependencies
+        run: npm ci
       - name: Test code
         id: run-tests
         run: npm run test
@@ -37,7 +49,7 @@ jobs:
     steps:
       - name: Get code
         uses: actions/checkout@v4
-      - name: Install Deps
+      - name: Install dependencies
         run: npm ci
       - name: Build website
         run: npm run build
@@ -52,24 +64,21 @@ jobs:
     steps:
       - name: Get Code
         uses: actions/checkout@v4
-
       - name: Get build artifacts
         uses: actions/download-artifact@v4
         with:
           name: dist-files
           path: ./dist
-      
       - name: Output contents
         run: ls 
       - name: Deploy site
         id: deploy
         uses: ./.github/actions/deployment
         env:
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
           bucketName: voiceclientchvr
           distFiles: ./dist
-
       - name: Output link
         run: echo "${{steps.deploy.outputs.URL}}"
