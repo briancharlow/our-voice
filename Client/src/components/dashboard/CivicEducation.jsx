@@ -9,7 +9,7 @@ const CivicEducation = () => {
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const response = await fetch('http://localhost:4000/documents/all');
+        const response = await fetch('http://16.171.28.194/documents/all');
         const data = await response.json();
         setDocuments(data);
       } catch (error) {
@@ -33,7 +33,7 @@ const CivicEducation = () => {
               <div className="border border-gray-200 rounded-lg p-4 flex justify-between items-center">
                 <div className="space-y-2">
                   <h3 className="text-lg font-medium text-gray-800">{doc.Title}</h3>
-                  <p className="text-gray-600 text-sm">{doc.Description || 'No description available'}</p>
+                  {/* <p className="text-gray-600 text-sm">{doc.Description || 'No description available'}</p> */}
                   <button
                     onClick={() => navigate(`/citizen-dashboard/chat-docs/${doc.Id}`, { state: { title: doc.Title, description: doc.Description } })}
                     className="bg-[#89D6E7] text-gray-700 px-4 py-2 rounded text-sm font-medium shadow-sm hover:bg-[#7AC6D7] transition-colors"

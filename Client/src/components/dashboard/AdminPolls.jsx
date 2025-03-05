@@ -25,7 +25,7 @@ const AdminPolls = () => {
   useEffect(() => {
     const fetchPolls = async () => {
       try {
-        const response = await fetch('http://localhost:4000/polls/all', {
+        const response = await fetch('http://16.171.28.194/polls/all', {
           credentials: 'include'
         });
         const data = await response.json();
@@ -65,7 +65,7 @@ const AdminPolls = () => {
     };
   
     try {
-      const response = await fetch('http://localhost:4000/polls/create', {
+      const response = await fetch('http://16.171.28.194/polls/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -94,7 +94,7 @@ const AdminPolls = () => {
   
   const handleDeletePoll = async (pollId) => {
     try {
-      const response = await fetch(`http://localhost:4000/polls/delete/${pollId}`, {
+      const response = await fetch(`http://16.171.28.194/polls/delete/${pollId}`, {
         method: 'PUT',
         credentials: 'include'
       });

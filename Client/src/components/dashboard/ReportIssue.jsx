@@ -51,7 +51,7 @@ const ReportIssue = () => {
     }
   
     try {
-      const response = await fetch('http://localhost:4000/issues/create', {
+      const response = await fetch('http://16.171.28.194/issues/create', {
         method: 'POST',
         body: formDataToSend,
       });

@@ -33,5 +33,5 @@ export const uploadFile = (folder) =>
                 cb(new Error(`Invalid file type for ${folder}. Allowed: ${allowedMimeTypes[folder].join(', ')}`), false);
             }
         },
-        limits: { fileSize: 5 * 1024 * 1024 }, // Max 5MB file size
+        limits: { fileSize: 10 * 1024 * 1024 }, // Max 10MB file size
     });

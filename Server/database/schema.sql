@@ -4,30 +4,23 @@ CREATE TABLE Users (
     Password VARCHAR(255) NOT NULL,
     Location VARCHAR(255),
     Role VARCHAR(50) CHECK (Role IN ('Citizen', 'Government Official', 'Admin')),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    ResetToken VARCHAR(255) NULL,
+    ResetTokenExpiry DATETIME NULL
 );
 
-CREATE TABLE Issues (
-    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
-    Title VARCHAR(255) NOT NULL,
-    Content TEXT NOT NULL,
-    Category VARCHAR(100),
-    Status VARCHAR(50) CHECK (Status IN ('Open', 'In Progress', 'Resolved', 'Closed')),
-    Image VARCHAR(255),
-    Location VARCHAR(255),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME NULL
-);
 
 CREATE TABLE Polls (
     Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     Title VARCHAR(255) NOT NULL,
+    Description VARCHAR(500) NULL,
     Deadline DATETIME NOT NULL,
     Location VARCHAR(255),
     Participants INT DEFAULT 0,
     Yes INT DEFAULT 0,
     No INT DEFAULT 0,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_deleted BIT DEFAULT 0
 );
 
 CREATE TABLE Votes (
@@ -42,6 +35,18 @@ CREATE TABLE Documents (
     Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     Title VARCHAR(255) NOT NULL,
     Description TEXT,
-    DocumentFile VARBINARY(MAX) NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    DocumentFile VARCHAR(255) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_deleted BIT DEFAULT 0
+);
+CREATE TABLE Issues (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    Title VARCHAR(255) NOT NULL,
+    Content TEXT NOT NULL,
+    Category VARCHAR(100),
+    Status VARCHAR(50) CHECK (Status IN ('Open', 'In Progress', 'Resolved', 'Closed')) DEFAULT 'Open',
+    Image VARCHAR(255),
+    Location VARCHAR(255),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NULL
 );

@@ -14,7 +14,7 @@ const Chat = () => {
   useEffect(() => {
     const fetchDocument = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/documents/id/${id}`);
+        const response = await fetch(`http://16.171.28.194/documents/id/${id}`);
         if (!response.ok) throw new Error('Failed to fetch document');
         const data = await response.json();
         setDocument({ title: data[0]?.Title || 'Unknown', description: data[0]?.Description || 'No description available.' });
@@ -27,13 +27,29 @@ const Chat = () => {
     fetchDocument();
   }, [id]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!prompt.trim()) return;
+    
     setMessages([...messages, { sender: 'user', text: prompt }]);
-    setTimeout(() => {
-      setMessages(prev => [...prev, { sender: 'system', text: `Response to: "${prompt}"` }]);
-    }, 1000);
+    
+    try {
+      const response = await fetch(`http://16.171.28.194/ai/document/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: prompt })
+      });
+      
+      const data = await response.json();
+      if (response.ok) {
+        setMessages(prev => [...prev, { sender: 'system', text: data.response }]);
+      } else {
+        setMessages(prev => [...prev, { sender: 'system', text: 'Error processing request.' }]);
+      }
+    } catch (error) {
+      setMessages(prev => [...prev, { sender: 'system', text: 'Failed to fetch response.' }]);
+    }
+    
     setPrompt('');
   };
 

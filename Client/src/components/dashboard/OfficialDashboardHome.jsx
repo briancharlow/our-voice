@@ -14,7 +14,7 @@ const OfficialDashboardHome = () => {
   useEffect(() => {
     const fetchUserSession = async () => {
       try {
-        const response = await fetch('http://localhost:4000/users/session', { credentials: 'include' });
+        const response = await fetch('http://16.171.28.194/users/session', { credentials: 'include' });
         const data = await response.json();
         if (response.ok) {
           setUser(data.user);
@@ -28,7 +28,7 @@ const OfficialDashboardHome = () => {
     const fetchIssuesByLocation = async (location) => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:4000/issues/location/${location}`, { 
+        const response = await fetch(`http://16.171.28.194/issues/location/${location}`, { 
           credentials: 'include' 
         });
         const data = await response.json();
@@ -52,7 +52,7 @@ const OfficialDashboardHome = () => {
 
   const updateIssueStatus = async (issueId, newStatus) => {
     try {
-      const response = await fetch('http://localhost:4000/issues/status', {
+      const response = await fetch('http://16.171.28.194/issues/status', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -98,58 +98,35 @@ const OfficialDashboardHome = () => {
     ? issues 
     : issues.filter(issue => issue.Status === filterStatus);
 
-  const generateSummary = () => {
-    // Get counts by status
-    const statusCounts = filteredIssues.reduce((acc, issue) => {
-      acc[issue.Status] = (acc[issue.Status] || 0) + 1;
-      return acc;
-    }, {});
-
-    // Get counts by category
-    const categoryCounts = filteredIssues.reduce((acc, issue) => {
-      acc[issue.Category] = (acc[issue.Category] || 0) + 1;
-      return acc;
-    }, {});
-
-    // Find most recent issue
-    const mostRecent = filteredIssues.length > 0
-      ? filteredIssues.reduce((latest, issue) => 
-          new Date(issue.created_at) > new Date(latest.created_at) ? issue : latest, 
-          filteredIssues[0])
-      : null;
-
-    // Generate summary text
-    const summaryText = `
-     Issues Summary for ${user?.Location}
-
-    **Total Issues:** ${filteredIssues.length}
+    const generateSummary = async () => {
+      try {
+        setMessage('Generating summary...');
+        setMessageType('success');
     
-    **Status Breakdown:**
-    ${Object.entries(statusCounts).map(([status, count]) => 
-      `- ${status}: ${count} (${Math.round(count / filteredIssues.length * 100)}%)`
-    ).join('\n')}
+        const response = await fetch('http://16.171.28.194/ai/summarize/issues', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ issues: filteredIssues }) // Send only displayed issues
+        });
     
-    **Category Breakdown:**
-    ${Object.entries(categoryCounts).map(([category, count]) => 
-      `- ${category}: ${count} (${Math.round(count / filteredIssues.length * 100)}%)`
-    ).join('\n')}
+        const data = await response.json();
+        
+        if (response.ok) {
+          setSummary(data.summary);
+          setShowSummary(true);
+        } else {
+          throw new Error(data.message || 'Failed to generate summary');
+        }
+      } catch (error) {
+        console.error('Error generating summary:', error);
+        setMessage('Failed to generate summary');
+        setMessageType('error');
+      } finally {
+        setTimeout(() => setMessage(null), 3000);
+      }
+    };
     
-    ${mostRecent ? `**Most Recent Issue:**
-    "${mostRecent.Title}" (${mostRecent.Category}) - ${new Date(mostRecent.created_at).toLocaleDateString()}` : ''}
-    
-    **Filter Applied:** ${filterStatus}
-    **Report Generated:** ${new Date().toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })}
-    `;
-
-    setSummary(summaryText);
-    setShowSummary(true);
-  };
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
