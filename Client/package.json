@@ -8,11 +8,11 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test:server": "vite dev",
-    "test:cy": "npx cypress open",
-    "test:run": "npx cypress run --watch=false --browsers=ChromeHeadless",
-    "test": "concurrently \"npm run test:server\" \"npm run test:cy\"",
-    "test:ci": "start-server-and-test 'vite dev --port 5173' http://localhost:5173 'cypress run --browsers=ChromeHeadless'"
+    "test:server": "vite dev --port 5173",
+    "test:cy:open": "cypress open",
+    "test:cy:run": "cypress run --browser chrome --headless",
+    "test": "concurrently \"npm run test:server\" \"npm run test:cy:run\"",
+    "test:ci": "start-server-and-test test:server http://localhost:5173 test:cy:run"
   },
   "dependencies": {
     "@radix-ui/react-tabs": "^1.1.3",

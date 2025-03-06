@@ -1,14 +1,17 @@
 name: Deployment
+
 on:
   push:
     branches:
       - main
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Get code
         uses: actions/checkout@v4
+
       - name: Load and cache dependencies
         uses: actions/cache@v3
         with:
@@ -16,46 +19,56 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('Client/**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+
       - name: Install dependencies
         run: cd Client && npm ci
 
-      - name: Test code
+      - name: Test code (Cypress in Chrome Headless)
         id: run-tests
-        run: cd Client && npm run test:ci
+        run: cd Client && npm run test:ci  # Use the 'test:ci' script
+
       - name: Upload test report
         if: failure() && steps.run-tests.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: test.json
+          path: test.json  # Adjust path as needed; Cypress usually outputs reports to cypress/results
+
   build:
     needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Get code
         uses: actions/checkout@v4
+
       - name: Install dependencies
         run: cd Client && npm ci
+
       - name: Build website
         run: cd Client && npm run build
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dist-files
           path: Client/dist
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Get Code
         uses: actions/checkout@v4
+
       - name: Get build artifacts
         uses: actions/download-artifact@v4
         with:
           name: dist-files
-          path: ./Client/dist
+          path: Client/dist
+
       - name: Output contents
-        run: ls 
+        run: ls
+
       - name: Deploy site
         id: deploy
         uses: ./.github/actions/deployment
@@ -64,6 +77,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
           bucketName: voiceclientchvr
-          distFiles: ./Client/dist
+          distFiles: Client/dist
+
       - name: Output link
         run: echo "${{steps.deploy.outputs.URL}}"
