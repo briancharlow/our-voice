@@ -78,5 +78,5 @@ jobs:
           bucketName: voiceclientchvr
           distFiles: Client/dist
 
-      - name: Output link
+      - name: output link
         run: echo "${{steps.deploy.outputs.URL}}"
