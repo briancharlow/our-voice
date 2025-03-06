@@ -16,7 +16,7 @@ const AdminUsers = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:80/users/getUsers', {
+      const response = await fetch('http://16.171.28.194/users/getUsers', {
         credentials: 'include'
       });
       const data = await response.json();
@@ -71,7 +71,7 @@ const AdminUsers = () => {
 
   const handleRoleChange = async (userId, newRole) => {
     try {
-      const response = await fetch('http://localhost:80/users/update-role', {
+      const response = await fetch('http://16.171.28.194/users/update-role', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

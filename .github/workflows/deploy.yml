@@ -6,47 +6,55 @@ on:
       - main
 
 jobs:
- test:
-  runs-on: ubuntu-latest
-  steps:
-    - name: Get code
-      uses: actions/checkout@v4
-
-    - name: Load and cache dependencies
-      uses: actions/cache@v3
-      with:
-        path: Client/node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('Client/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-
-    - name: Install dependencies
-      working-directory: Client
-      run: npm ci
-
-    - name: Run Cypress Tests (Headless)
-      id: run-tests
-      working-directory: Client
-      run: npm run test:ci || npm run test  # Try CI mode first, fallback to regular tests
-
-    - name: Upload test report (on failure)
-      if: failure()
-      uses: actions/upload-artifact@v4
-      with:
-        name: cypress-test-report
-        path: Client/cypress/results  # Ensure Cypress outputs results in this directory
-
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Get code
         uses: actions/checkout@v4
 
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Load and cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: Client/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('Client/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
-        run: cd Client && npm ci
+        working-directory: Client
+        run: npm ci
+
+      - name: Run Cypress Tests (Headless)
+        id: run-tests
+        working-directory: Client
+        run: npm run test:ci
+
+      - name: Upload Cypress Test Report (if failed)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-test-report
+          path: Client/cypress/results
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        working-directory: Client
+        run: npm ci
 
       - name: Build website
-        run: cd Client && npm run build
+        working-directory: Client
+        run: npm run build
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -68,7 +76,7 @@ jobs:
           path: Client/dist
 
       - name: Output contents
-        run: ls
+        run: ls -la Client/dist
 
       - name: Deploy site
         id: deploy
@@ -80,5 +88,5 @@ jobs:
           bucketName: voiceclientchvr
           distFiles: Client/dist
 
-      - name: output link
-        run: echo "${{steps.deploy.outputs.URL}}"
+      - name: Output link
+        run: echo "${{ steps.deploy.outputs.URL }}"

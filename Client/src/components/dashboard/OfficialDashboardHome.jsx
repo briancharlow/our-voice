@@ -14,7 +14,7 @@ const OfficialDashboardHome = () => {
   useEffect(() => {
     const fetchUserSession = async () => {
       try {
-        const response = await fetch('http://localhost:80/users/session', { credentials: 'include' });
+        const response = await fetch('http://16.171.28.194/users/session', { credentials: 'include' });
         const data = await response.json();
         if (response.ok) {
           setUser(data.user);
@@ -28,7 +28,7 @@ const OfficialDashboardHome = () => {
     const fetchIssuesByLocation = async (location) => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:80/issues/location/${location}`, { 
+        const response = await fetch(`http://16.171.28.194/issues/location/${location}`, { 
           credentials: 'include' 
         });
         const data = await response.json();
@@ -52,7 +52,7 @@ const OfficialDashboardHome = () => {
 
   const updateIssueStatus = async (issueId, newStatus) => {
     try {
-      const response = await fetch('http://localhost:80/issues/status', {
+      const response = await fetch('http://16.171.28.194/issues/status', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -103,15 +103,13 @@ const OfficialDashboardHome = () => {
         setMessage('Generating summary...');
         setMessageType('success');
     
-        const response = await fetch('http://localhost:80/ai/summarize/issues', {
+        const response = await fetch('http://16.171.28.194/ai/summarize/issues', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({ issues: filteredIssues }) // Send only displayed issues
         });
-         console.log('ai response', response);
-
-         console.log('issues', filteredIssues);
+    
         const data = await response.json();
         
         if (response.ok) {

@@ -9,7 +9,7 @@ const CivicEducation = () => {
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
-        const response = await fetch('http://localhost:80/documents/all');
+        const response = await fetch('http://16.171.28.194/documents/all');
         const data = await response.json();
         setDocuments(data);
       } catch (error) {
