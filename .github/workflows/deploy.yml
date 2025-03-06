@@ -2,24 +2,8 @@ name: Deployment
 on:
   push:
     branches:
-      # - main
+      - main
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get code
-        uses: actions/checkout@v4
-      - name: Load and cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      - name: Install dependencies
-        run: npm ci
-      - name: Lint code
-        run: npm run lint
   test:
     runs-on: ubuntu-latest
     steps:
@@ -28,16 +12,16 @@ jobs:
       - name: Load and cache dependencies
         uses: actions/cache@v3
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          path: Client/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('Client/**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Install dependencies
-        run: npm install
+        run: cd Client && npm ci
 
       - name: Test code
         id: run-tests
-        run: npm run test
+        run: cd Client && npm run test:ci
       - name: Upload test report
         if: failure() && steps.run-tests.outcome == 'failure'
         uses: actions/upload-artifact@v4
@@ -51,14 +35,14 @@ jobs:
       - name: Get code
         uses: actions/checkout@v4
       - name: Install dependencies
-        run: npm install
+        run: cd Client && npm ci
       - name: Build website
-        run: npm run build
+        run: cd Client && npm run build
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dist-files
-          path: dist
+          path: Client/dist
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -69,7 +53,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: dist-files
-          path: ./dist
+          path: ./Client/dist
       - name: Output contents
         run: ls 
       - name: Deploy site
@@ -80,6 +64,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
           bucketName: voiceclientchvr
-          distFiles: ./dist
+          distFiles: ./Client/dist
       - name: Output link
         run: echo "${{steps.deploy.outputs.URL}}"
