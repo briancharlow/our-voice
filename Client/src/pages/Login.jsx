@@ -15,26 +15,24 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let response = await axios.post("http://16.171.28.194/users/login", formData, { withCredentials: true });
-      console.log('login response',response);
+      const response = await axios.post("http://16.171.28.194/users/login", formData);
+      console.log('login response 2', response);
       
-
-      // Fetch user session details
-      const sessionResponse = await axios.get("http://16.171.28.194/users/session", { withCredentials: true });
-
-      console.log('sessionResponse',sessionResponse);
-      const user = sessionResponse.data.user;
-
+      // Store token and user data in localStorage
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      
       setMessage("Login successful! Redirecting...");
       setMessageType("success");
 
       // Redirect based on role
       setTimeout(() => {
-        if (user?.Role === "Citizen") {
+        const user = response.data.user;
+        if (user?.role === "Citizen") {
           navigate("/citizen-dashboard");
-        } else if(user?.Role === "Government Official") {
+        } else if(user?.role === "Government Official") {
           navigate("/official-dashboard");
-        }else {
+        } else if(user?.role === "Admin") {
           navigate("/admin-dashboard"); // Default dashboard for other roles
         }
       }, 2000);

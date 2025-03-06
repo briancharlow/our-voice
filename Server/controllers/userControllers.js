@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
-import session from 'express-session';
+import jwt from 'jsonwebtoken';
 import { DbHelper } from '../Database Helper/dbHelper.js';
 import crypto from "crypto";
-import {validateUser } from '../validators/validators.js';
+import { validateUser } from '../validators/validators.js';
 import { sendWelcomeEmail, sendResetPasswordEmail } from '../services/emailService.js';
 
 const db = new DbHelper(); // Instantiate DB Helper
@@ -41,15 +41,13 @@ export const registerUser = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
 // Login User
 export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {
         let results = await db.executeProcedure('AuthenticateUser', { Email: email });
-
-      
-
         const user = results.recordset[0];
 
         if (!user) {
@@ -61,28 +59,37 @@ export const loginUser = async (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        // Store user details in session
-        req.session.authorized = true;
-        req.session.user = user;
-      
-        console.log('User:', user);
+        // Create JWT token
+        const userForToken = {
+            id: user.UserId,
+            email: user.Email,
+            role: user.Role
+        };
 
-        res.status(200).json({ message: 'Login successful' });
+        const token = jwt.sign(
+            userForToken, 
+            process.env.JWT_SECRET || 'your_jwt_secret_key',
+            { expiresIn: '24h' }
+        );
+
+        // Send token and user info
+        res.status(200).json({ 
+            message: 'Login 2 successful',
+            token: token,
+            user: {
+                id: user.UserId,
+                email: user.Email,
+                role: user.Role,
+                location: user.Location
+            }
+        });
 
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
-
 // Logout User
-export const logoutUser = (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            return res.status(500).json({ error: 'Failed to log out' });
-        }
-        res.status(200).json({ message: 'Logout successful' });
-    });
-};
+// No need for logout endpoint with JWT (client just discards the token)
 
 // Update User Role
 export const updateUserRole = async (req, res) => {
@@ -103,23 +110,23 @@ export const updateUserRole = async (req, res) => {
 
 export async function getAllUsers(req, res) {
     try {
-    
-      const results = await db.executeProcedure('GetAllUsers', {});
-      let users = results.recordset;
+        const results = await db.executeProcedure('GetAllUsers', {});
+        let users = results.recordset;
      
-      return res.status(200).json({
-        success: true,
-        Users: users
-      });
+        return res.status(200).json({
+            success: true,
+            Users: users
+        });
     } catch (error) {
-      console.error('Error fetching users:', error);
-      return res.status(500).json({
-        success: false,
-        error: 'Failed to retrieve users'
-      });
+        console.error('Error fetching users:', error);
+        return res.status(500).json({
+            success: false,
+            error: 'Failed to retrieve users'
+        });
     }
-  }
-  export const forgotPassword = async (req, res) => {
+}
+
+export const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
     try {
@@ -153,6 +160,7 @@ export async function getAllUsers(req, res) {
         res.status(500).json({ error: error.message });
     }
 };
+
 export const resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
 
@@ -192,4 +200,10 @@ export const resetPassword = async (req, res) => {
         console.error("Reset Password Error:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
+};
+
+// Get Current User Information from token
+export const getCurrentUser = async (req, res) => {
+    // User info is added by auth middleware
+    res.status(200).json({ user: req.user });
 };

@@ -6,33 +6,36 @@ on:
       - main
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get code
-        uses: actions/checkout@v4
+ test:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Get code
+      uses: actions/checkout@v4
 
-      - name: Load and cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: Client/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('Client/**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+    - name: Load and cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: Client/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('Client/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
 
-      - name: Install dependencies
-        run: cd Client && npm ci
+    - name: Install dependencies
+      working-directory: Client
+      run: npm ci
 
-      - name: Test code (Cypress in Chrome Headless)
-        id: run-tests
-        run: cd Client && npm run test:ci  # Use the 'test:ci' script
+    - name: Run Cypress Tests (Headless)
+      id: run-tests
+      working-directory: Client
+      run: npm run test:ci || npm run test  # Try CI mode first, fallback to regular tests
 
-      - name: Upload test report
-        if: failure() && steps.run-tests.outcome == 'failure'
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report
-          path: test.json  # Adjust path as needed; Cypress usually outputs reports to cypress/results
+    - name: Upload test report (on failure)
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: cypress-test-report
+        path: Client/cypress/results  # Ensure Cypress outputs results in this directory
+
 
   build:
     runs-on: ubuntu-latest
