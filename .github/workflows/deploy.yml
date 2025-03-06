@@ -36,7 +36,6 @@ jobs:
         name: cypress-test-report
         path: Client/cypress/results  # Ensure Cypress outputs results in this directory
 
-
   build:
     runs-on: ubuntu-latest
     steps:
