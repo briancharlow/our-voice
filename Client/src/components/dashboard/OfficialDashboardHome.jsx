@@ -109,7 +109,9 @@ const OfficialDashboardHome = () => {
           credentials: 'include',
           body: JSON.stringify({ issues: filteredIssues }) // Send only displayed issues
         });
-    
+         console.log('ai response', response);
+
+         console.log('issues', filteredIssues);
         const data = await response.json();
         
         if (response.ok) {

@@ -15,12 +15,12 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      let response = await axios.post("http://localhost:80/users/login", formData, { withCredentials: true });
+      let response = await axios.post("http://16.171.28.194/users/login", formData, { withCredentials: true });
       console.log('login response',response);
       
 
       // Fetch user session details
-      const sessionResponse = await axios.get("http://localhost:80/users/session", { withCredentials: true });
+      const sessionResponse = await axios.get("http://16.171.28.194/users/session", { withCredentials: true });
 
       console.log('sessionResponse',sessionResponse);
       const user = sessionResponse.data.user;

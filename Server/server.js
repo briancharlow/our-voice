@@ -21,7 +21,7 @@ app.use(cors({
     origin: [
         'http://localhost:5173',  // Allow local development
         'http://16.171.28.194',  // Your backend's public IP
-        'http://your-frontend-domain.com' // If you have a domain
+        'http://voiceclientchvr.s3-website.eu-north-1.amazonaws.com/' // If you have a domain
     ],
     credentials: true
 }));
