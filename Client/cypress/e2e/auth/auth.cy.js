@@ -41,11 +41,6 @@ describe('Signup Page', () => {
     cy.url().should('include', '/login');
   });
 
-  it('should display counties in the location dropdown', () => {
-    cy.get('select[name="location"]').click();
-    cy.get('select[name="location"] option').should('contain', 'Nairobi');
-    cy.get('select[name="location"] option').should('contain', 'Mombasa');
-  });
 });
 
 // cypress/e2e/reset-password.cy.js

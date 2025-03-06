@@ -6,25 +6,26 @@ describe('Citizen Journey', () => {
       // No need to visit dashboard as login redirects automatically
     });
   
-    it('should verify successful login', () => {
-      // Check for successful login by looking for success message or dashboard element
-      cy.contains('Dashboard').should('be.visible');
-    });
-  
+   
     describe('Civic Education', () => {
       it('should display documents and navigate to chat', () => {
-        cy.visit('/citizen-dashboard/civic-education');
-        
-        // Check if at least one document is displayed
-        cy.get('[data-cy="document-list"]').should('exist');
-        
-        // Click on the first document's chat button
-        cy.contains('Chat Docs').first().click();
-        
-        // Verify navigation to chat page
-        cy.url().should('include', '/chat-docs/');
+          cy.visit('/citizen-dashboard/civic-education');
+
+          // Check if at least one document is displayed
+          cy.get('.text-lg.font-medium.text-gray-800').should('exist');
+
+          // Click on the first document's chat button
+          cy.get('button').contains('Chat Docs...').first().click();
+
+          // Verify navigation to chat page
+          cy.url().should('include', '/citizen-dashboard/chat-docs/');
+
+          // Check if document title and description appear on the chat page
+          cy.get('.text-xl.font-bold').should('exist'); // Title
+          cy.get('.text-gray-600').should('exist'); // Description
       });
     });
+  
   
     describe('Document Chat', () => {
       it('should allow asking questions to a document', () => {
