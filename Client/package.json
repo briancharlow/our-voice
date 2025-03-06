@@ -1,5 +1,5 @@
 {
-  "name": "package.json",
+  "name": "client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:server": "vite dev",
+    "test:cy": "npx cypress open",
+    "test:run": "npx cypress run",
+    "test": "concurrently \"npm run test:server\" \"npm run test:cy\""
   },
   "dependencies": {
     "@radix-ui/react-tabs": "^1.1.3",
@@ -28,6 +32,8 @@
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.2",
+    "cypress": "^14.1.0",
     "eslint": "^9.21.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",

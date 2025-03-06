@@ -14,7 +14,7 @@ const Chat = () => {
   useEffect(() => {
     const fetchDocument = async () => {
       try {
-        const response = await fetch(`http://16.171.28.194/documents/id/${id}`);
+        const response = await fetch(`http://localhost:80/documents/id/${id}`);
         if (!response.ok) throw new Error('Failed to fetch document');
         const data = await response.json();
         setDocument({ title: data[0]?.Title || 'Unknown', description: data[0]?.Description || 'No description available.' });
@@ -34,7 +34,7 @@ const Chat = () => {
     setMessages([...messages, { sender: 'user', text: prompt }]);
     
     try {
-      const response = await fetch(`http://16.171.28.194/ai/document/${id}`, {
+      const response = await fetch(`http://localhost:80/ai/document/${id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: prompt })

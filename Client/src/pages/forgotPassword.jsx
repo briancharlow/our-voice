@@ -11,7 +11,7 @@ export default function ForgotPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://16.171.28.194/users/forgot-password", { email });
+      await axios.post("http://localhost:80/users/forgot-password", { email });
       setMessage("Password reset link sent! Check your email.");
       setMessageType("success");
       setTimeout(() => setMessage(null), 5000);

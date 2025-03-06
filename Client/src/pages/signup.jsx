@@ -22,7 +22,7 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://16.171.28.194/users/register", formData);
+      const response = await axios.post("http://localhost:80/users/register", formData);
       setMessage("Signup successful! Redirecting...");
       setMessageType("success");
       setTimeout(() => {

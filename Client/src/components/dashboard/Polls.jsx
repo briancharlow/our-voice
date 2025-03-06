@@ -11,7 +11,7 @@ const Polls = () => {
   useEffect(() => {
     const fetchUserSession = async () => {
       try {
-        const response = await fetch('http://16.171.28.194/users/session', { credentials: 'include' });
+        const response = await fetch('http://localhost:80/users/session', { credentials: 'include' });
         const data = await response.json();
 
         if (response.ok) {
@@ -25,7 +25,7 @@ const Polls = () => {
     const fetchPolls = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://16.171.28.194/polls/all');
+        const response = await fetch('http://localhost:80/polls/all');
         const data = await response.json();
 
         const formattedPolls = data.filter(poll => !poll.is_deleted).map(poll => ({
@@ -65,7 +65,7 @@ const Polls = () => {
     }
 
     try {
-      const response = await fetch('http://16.171.28.194/polls/vote', {
+      const response = await fetch('http://localhost:80/polls/vote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

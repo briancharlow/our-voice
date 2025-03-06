@@ -64,7 +64,7 @@ const AdminIssues = () => {
   useEffect(() => {
     const fetchIssues = async () => {
       try {
-        const response = await fetch('http://16.171.28.194/issues/all', {
+        const response = await fetch('http://localhost:80/issues/all', {
           credentials: 'include',
         });
         const data = await response.json();

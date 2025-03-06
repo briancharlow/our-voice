@@ -65,6 +65,7 @@ export const loginUser = async (req, res) => {
         req.session.authorized = true;
         req.session.user = user;
       
+        console.log('User:', user);
 
         res.status(200).json({ message: 'Login successful' });
 

@@ -32,7 +32,7 @@ const AdminDocuments = () => {
   const fetchDocuments = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://16.171.28.194/documents/all', {
+      const response = await fetch('http://localhost:80/documents/all', {
         credentials: 'include',
       });
       const data = await response.json();
@@ -62,7 +62,7 @@ const AdminDocuments = () => {
     formData.append('document', attachFile);
   
     try {
-      const response = await fetch('http://16.171.28.194/documents/upload', {
+      const response = await fetch('http://localhost:80/documents/upload', {
         method: 'POST',
         body: formData,
         credentials: 'include',
@@ -106,7 +106,7 @@ const AdminDocuments = () => {
     }
     
     try {
-      const response = await fetch(`http://16.171.28.194/documents/delete/${documentId}`, {
+      const response = await fetch(`http://localhost:80/documents/delete/${documentId}`, {
         method: 'PUT',
         credentials: 'include',
       });

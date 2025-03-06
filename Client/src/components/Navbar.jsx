@@ -7,7 +7,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://16.171.28.194/users/logout', {
+      const response = await fetch('http://localhost:80/users/logout', {
         method: 'POST',
         credentials: 'include'
       });

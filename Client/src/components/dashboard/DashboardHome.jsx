@@ -8,7 +8,7 @@ const DashboardHome = () => {
   useEffect(() => {
     const fetchUserSession = async () => {
       try {
-        const response = await fetch('http://16.171.28.194/users/session', { credentials: 'include' });
+        const response = await fetch('http://localhost:80/users/session', { credentials: 'include' });
         const data = await response.json();
         if (response.ok) {
           setUser(data.user);
@@ -20,7 +20,7 @@ const DashboardHome = () => {
 
     const fetchPolls = async () => {
       try {
-        const response = await fetch('http://16.171.28.194/polls/all');
+        const response = await fetch('http://localhost:80/polls/all');
         const data = await response.json();
         setPolls(data.filter(poll => !poll.is_deleted).map(poll => ({
           id: poll.Id,
@@ -36,7 +36,7 @@ const DashboardHome = () => {
 
     const fetchIssues = async () => {
       try {
-        const response = await fetch('http://16.171.28.194/issues/all');
+        const response = await fetch('http://localhost:80/issues/all');
         const data = await response.json();
         setIssues(data.map(issue => ({
           id: issue.Id,

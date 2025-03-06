@@ -11,7 +11,7 @@ const OfficialPolls = () => {
   useEffect(() => {
     const fetchPolls = async () => {
       try {
-        const response = await fetch('http://16.171.28.194/polls/all');
+        const response = await fetch('http://localhost:80/polls/all');
         const data = await response.json();
 
         if (response.ok) {
