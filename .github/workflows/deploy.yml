@@ -35,7 +35,6 @@ jobs:
           path: test.json  # Adjust path as needed; Cypress usually outputs reports to cypress/results
 
   build:
-    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Get code
