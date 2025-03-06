@@ -5,7 +5,7 @@ import NotFound from "./pages/notFound";
 import ForgotPassword from "./pages/forgotPassword";
 import ResetPassword from "./pages/resetPassword";
 import CitizenDashboard from "./pages/citizenDashboard";
-import OfficialDashboard from "./pages/officialDashboard";
+import OfficialDashboard from "./pages/OfficialDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 
 export default function App() {
