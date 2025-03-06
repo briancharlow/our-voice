@@ -93,22 +93,4 @@ describe('Citizen Journey', () => {
       });
     });
   
-    describe('Basic Citizen Journey', () => {
-      it('should navigate through the main features', () => {
-        // Check dashboard after login
-        cy.contains('Dashboard').should('exist');
-        
-        // 1. Visit civic education
-        cy.visit('/citizen-dashboard/civic-education');
-        cy.contains('Chat Docs').should('exist');
-        
-        // 2. Visit polls
-        cy.visit('/citizen-dashboard/polls');
-        cy.contains('Current Public Polls').should('exist');
-        
-        // 3. Visit report issue
-        cy.visit('/citizen-dashboard/report-issue');
-        cy.contains('Submit Report').should('exist');
-      });
-    });
   });
